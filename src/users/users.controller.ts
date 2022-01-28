@@ -5,12 +5,13 @@ import { UsersService } from './users.service';
 
 @Controller('users')
 export class UsersController {
-  constructor(private readonly usersService: UsersService) {}
+
+  constructor(private readonly usersService: UsersService) {
+  }
 
   @Post()
-  create(@Body() createUserDto: CreateUserDto): Promise<User> {
-    console.log('createUserDto', createUserDto);
-    return this.usersService.create(createUserDto);
+  async create(@Body() createUserDto: CreateUserDto): Promise<User> {
+    return await this.usersService.create(createUserDto);
   }
 
   @Get()
@@ -19,7 +20,7 @@ export class UsersController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string): Promise<User> {
+  findOne(@Param('id') id: string): Promise<User | undefined> {
     return this.usersService.findOne(id);
   }
 
