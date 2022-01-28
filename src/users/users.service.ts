@@ -1,48 +1,23 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable } from "@nestjs/common";
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
 import { User } from './user.entity';
 
-export type FakeUser = any;
-
 @Injectable()
 export class UsersService {
-
-  private readonly fakeUser: FakeUser[];
 
   constructor(
     @InjectRepository(User)
     private readonly usersRepository: Repository<User>,
   ) {
-    this.fakeUser = [
-      {
-        userId: 1,
-        username: 'john',
-        password: 'changeme',
-      },
-      {
-        userId: 2,
-        username: 'chris',
-        password: 'secret',
-      },
-      {
-        userId: 3,
-        username: 'maria',
-        password: 'guess',
-      },
-    ];
   }
 
   async create(createUserDto: CreateUserDto): Promise<User> {
     const { username, password } = createUserDto;
-    const noUnique = await this.findAll().then(
-      (users: User[]) =>
-        users.filter((user: User) => user.username === username).length,
-    ); // 1 : 0
+    const noUnique = await this.findByUsername(username);
     if (!!noUnique) {
-      console.log('email (' + username + ') already exist');
-      return null;
+      throw new Error('email (' + username + ') already exist').message;
     }
     const user = new User();
     user.username = username;
@@ -58,8 +33,8 @@ export class UsersService {
     return await this.usersRepository.findOne(id);
   }
 
-  async findOneFake(username: string): Promise<User | undefined> {
-    return this.fakeUser.find(user => user.username === username);
+  async findByUsername(username: string): Promise<User | undefined> {
+    return this.usersRepository.findOne({ username });
   }
 
   async remove(id: string): Promise<void> {
