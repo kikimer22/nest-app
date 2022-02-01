@@ -1,9 +1,9 @@
-import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common';
-import { CreateUserDto } from './dto/create-user.dto';
-import { User } from './user.entity';
-import { UsersService } from './users.service';
+import { Body, Controller, Delete, Get, Param, Post } from "@nestjs/common";
+import { CreateUserDto } from "./dto/create-user.dto";
+import { User } from "./user.entity";
+import { UsersService } from "./users.service";
 
-@Controller('users')
+@Controller("users")
 export class UsersController {
 
   constructor(private readonly usersService: UsersService) {
@@ -19,13 +19,14 @@ export class UsersController {
     return this.usersService.findAll();
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string): Promise<User | undefined> {
-    return this.usersService.findOne(id);
+  @Get(":uid")
+  findOne(@Param("uid") uid: string): Promise<User | undefined> {
+    return this.usersService.findByUid(uid);
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string): Promise<void> {
-    return this.usersService.remove(id);
-  }
+  // @Delete(":uid")
+  // async remove(@Param("uid") uid: string): Promise<void> {
+  //   const user: User = await this.usersService.findByUid(uid);
+  //   return this.usersService.remove(user.id);
+  // }
 }
