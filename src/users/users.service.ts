@@ -19,11 +19,12 @@ export class UsersService {
     const noUnique1 = await this.findByUid(uid);
     if (!!noUnique1) {
       throw new Error("uid (" + uid + ") already exist").message;
-    }
-    const noUnique2 = await this.findByEmail(email);
-    if (!!noUnique2) {
-      console.log(noUnique2);
-      this.remove(noUnique2.id);
+    } else {
+      const noUnique2 = await this.findByEmail(email);
+      if (!!noUnique2) {
+        console.log(noUnique2);
+        this.remove(noUnique2.id);
+      }
     }
     const user = new User();
     user.email = email;
