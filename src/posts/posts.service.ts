@@ -4,6 +4,7 @@ import { Repository } from "typeorm";
 import { PostEnt } from "./post.entity";
 import * as CONSTANT from "../constants.api";
 import { CreatePostDto } from "./dto/create-post.dto";
+import { UpdatePostDto } from "./dto/update-post.dto";
 
 @Injectable()
 export class PostsService {
@@ -22,6 +23,21 @@ export class PostsService {
     post.authorUid = authorUid;
     post.date = date;
     return await this.postsRepository.save(post);
+  }
+
+  async update(updatePostDto: UpdatePostDto): Promise<any> {
+    const currentPost = await this.findOne(updatePostDto.id);
+    console.log(currentPost);
+    currentPost.title = updatePostDto.title;
+    currentPost.text = updatePostDto.text;
+    currentPost.date = new Date(Date.now());
+    return await this.postsRepository.update(updatePostDto.id, currentPost);
+    // const { title, text, authorUid, date } = updatePostDto;
+    // currentPost.title = title;
+    // currentPost.text = text;
+    // currentPost.authorUid = authorUid;
+    // currentPost.date = date;
+    // return await this.postsRepository.update(currentPost);
   }
 
   async findAll(): Promise<PostEnt[]> {
